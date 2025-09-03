@@ -1,4 +1,4 @@
-const VITE_API_KEY = import.meta.env.VITE_API_KEY as string;
+const VITE_API_KEY: string = import.meta.env.VITE_API_KEY;
 
 export async function submit(fullName: string, email: string) {
   try {
