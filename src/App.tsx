@@ -1,28 +1,28 @@
 import { useState } from "react";
 import "./App.css";
+import { submit } from "../api/api";
 
 function App() {
-  const [name, setName] = useState<string>("");
+  const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
   const handleSubmit = async () => {
-    try {
-      const response = await fetch("http://localhost:7071/api/FormFunction", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email }),
-      });
+    if (!fullName) {
+      setMessage("Kontrollera att du har fyllt i ditt namn.");
+      return;
+    }
+    if (!email || !email.includes("@")) {
+      setMessage("Kontrollera att din Email är rätt.");
+      return;
+    }
 
-      if (!response.ok) {
-        throw new Error("Har du verkligen fyllt i alla fält korrekt?");
-      }
-
-      await response.json();
-      setMessage("Tack, du är nu inskriven!");
-    } catch (error) {
+    const data = await submit(fullName, email);
+    if ((data.statusCode = 200)) {
+      setMessage(data.message || "Tack, du är nu inskriven!");
+      setFullName("");
+      setEmail("");
+    } else {
       setMessage("Nu blev det lite tokigt, försök igen senare.");
     }
   };
@@ -34,8 +34,8 @@ function App() {
           <input
             type="fullName"
             placeholder="Namn"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
             required
           />
           <input
