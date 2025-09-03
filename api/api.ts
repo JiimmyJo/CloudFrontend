@@ -13,8 +13,6 @@ export async function submit(fullName: string, email: string) {
       }
     );
 
-    console.log(VITE_API_KEY);
-
     const data = await response.json();
 
     return data;
